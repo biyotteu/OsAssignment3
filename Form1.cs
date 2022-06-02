@@ -138,8 +138,8 @@ namespace OsAssignment3
                 ProgressBar progress = new ProgressBar();
                 progress.Value = 0;
                 progress.Minimum = 0;
-                Debug.WriteLine(new FileInfo(files[i]).Length.ToString()+"~~~~~~~");
-                progress.Maximum = (int)new FileInfo(files[i]).Length;
+                Debug.WriteLine(File.ReadAllText(files[i]).Length.ToString()+"~~~~~~~");
+                progress.Maximum = (int)File.ReadAllText(files[i]).Length;
                 progress.Dock = DockStyle.Fill;
                 progress.Step = 1;
                 progressBars.Add(progress);
@@ -235,7 +235,8 @@ namespace OsAssignment3
         private void initThreads()
         {
             threads.Clear();
-            for(int i = 0; i < threadCount; i++)
+            tmp.Clear();
+            for (int i = 0; i < threadCount; i++)
             {
                 int idx = i;
                 threads.Add(new Thread(() => process(idx)));
@@ -247,6 +248,10 @@ namespace OsAssignment3
             initThreadStatusListView();
             initProgressListView();
             initThreads();
+
+            isMalwareView.Controls.Clear();
+            benignListView.Items.Clear();
+
             isLock.Clear();
             isComplete.Clear();
             isMalwareFile.Clear();
@@ -270,7 +275,13 @@ namespace OsAssignment3
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            foreach(Thread t in threads)
+            if(isMalwareView.Controls.Count != 0 || benignListView.Items.Count != 0)
+            {
+                MessageBox.Show("READY 버튼을 눌러 초기화해주세요!");
+                return;
+            }
+
+            foreach (Thread t in threads)
                 t.Start();
             foreach(Thread t in threads)
                 t.Join();
@@ -285,7 +296,7 @@ namespace OsAssignment3
             {
                 benignListView.Columns[i].Width = (benignListView.Width - 10) / 3;
             }
-            benignListView.Items.Clear();
+
             for (int i = 0; i < files.Count; i++)
             {
                 if (isMalwareFile[i].Count > 0) continue;
@@ -299,7 +310,6 @@ namespace OsAssignment3
                 benignListView.Items[benignListView.Items.Count - 1].UseItemStyleForSubItems = false;
             }
 
-            isMalwareView.Controls.Clear();
             for (int i = 0; i < files.Count; i++)
             {
                 if (isMalwareFile[i].Count == 0) continue;

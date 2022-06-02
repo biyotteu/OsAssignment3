@@ -104,12 +104,12 @@ namespace OsAssignment3
             long sum = 0;
             foreach(String file in files)
             {
-                /*if(new System.IO.FileInfo(file).Length != File.ReadAllText(file).Length)
+                if(new System.IO.FileInfo(file).Length != File.ReadAllText(file).Length)
                 {
                     Debug.WriteLine(file);
-                }*/
-                sum += new System.IO.FileInfo(file).Length;
-                /*sum += File.ReadAllText(file).Length;*/
+                }
+                /*sum += new System.IO.FileInfo(file).Length;*/
+                sum += File.ReadAllText(file).Length;
             }
             this.minThreadCount = (int)((sum+99)/100);
             totalStringLabel.Text = sum.ToString();
